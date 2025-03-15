@@ -17,6 +17,7 @@ const ReservationManager = ({ tables, currentUser }) => {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [viewMode, setViewMode] = useState('calendar'); // calendar veya list
+  const [error, setError] = useState(null);
 
   // Çalışma saatleri
   const workingHours = Array.from({ length: 14 }, (_, i) => {
@@ -56,32 +57,20 @@ const ReservationManager = ({ tables, currentUser }) => {
   }, [filterReservations]);
 
   const handleDateChange = useCallback((e) => {
-    setSelectedDate(new Date(e.target.value));
+    const newDate = new Date(e.target.value);
+    setSelectedDate(newDate);
   }, []);
 
   const handleSearch = useCallback((e) => {
-    setSearchTerm(e.target.value);
+    const searchValue = e.target.value;
+    setSearchTerm(searchValue);
   }, []);
 
-  const handleInputChange = useCallback((e) => {
-    const { name, value } = e.target;
-    setNewReservation(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  }, []);
-
-  const validateReservation = useCallback(() => {
+  const validateReservation = useCallback((newReservation) => {
     const { customerName, phoneNumber, date, time, guests, tableId } = newReservation;
     
     if (!customerName || !phoneNumber || !date || !time || !guests || !tableId) {
       return 'Tüm alanları doldurunuz.';
-    }
-
-    // Telefon numarası kontrolü
-    const phoneRegex = /^[0-9]{10}$/;
-    if (!phoneRegex.test(phoneNumber)) {
-      return 'Geçerli bir telefon numarası giriniz (10 haneli).';
     }
 
     // Tarih kontrolü
@@ -91,59 +80,67 @@ const ReservationManager = ({ tables, currentUser }) => {
     }
 
     // Masa müsaitlik kontrolü
-    const conflictingReservation = reservations.find(res => {
-      const resDate = new Date(res.date + ' ' + res.time);
-      const hourDiff = Math.abs(resDate - reservationDate) / 36e5; // Saat farkı
-      return res.tableId === tableId && hourDiff < 2; // 2 saat içinde başka rezervasyon var mı
-    });
+    const tableReservations = reservations.filter(res => 
+      res.tableId === tableId && 
+      res.status !== 'cancelled' &&
+      new Date(res.date + ' ' + res.time).toDateString() === reservationDate.toDateString()
+    );
 
-    if (conflictingReservation) {
-      return 'Seçilen masa ve saatte başka bir rezervasyon bulunmaktadır.';
+    if (tableReservations.length > 0) {
+      return 'Bu masa seçilen tarihte dolu.';
     }
 
-    // Masa kapasitesi kontrolü
-    const selectedTable = tables.find(t => t.id.toString() === tableId);
+    // Masa kapasite kontrolü
+    const selectedTable = tables.find(t => t.id === parseInt(tableId));
     if (selectedTable && guests > selectedTable.capacity) {
-      return `Seçilen masa maksimum ${selectedTable.capacity} kişiliktir.`;
+      return `Bu masa maksimum ${selectedTable.capacity} kişiliktir.`;
     }
 
     return null;
-  }, [newReservation, reservations, tables]);
+  }, [reservations, tables]);
 
   const handleSubmit = useCallback((e) => {
     e.preventDefault();
     
-    const error = validateReservation();
+    const error = validateReservation(newReservation);
     if (error) {
-      alert(error);
+      setError(error);
       return;
     }
 
-    const newId = Math.max(...reservations.map(r => r.id), 0) + 1;
     const reservation = {
+      id: Date.now(),
       ...newReservation,
-      id: newId,
-      status: 'onaylandı'
+      status: 'confirmed'
     };
 
-    setReservations([...reservations, reservation]);
+    setReservations(prev => [...prev, reservation]);
+    
+    // Formu temizle
     setNewReservation({
       customerName: '',
       phoneNumber: '',
       date: '',
       time: '',
-      guests: 2,
+      guests: 1,
       tableId: '',
       notes: ''
     });
-    setIsEditing(false);
-  }, [newReservation, reservations]);
+  }, [newReservation, validateReservation]);
+
+  const handleInputChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setNewReservation(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  }, []);
 
   const handleCancel = useCallback((reservationId) => {
     if (window.confirm('Rezervasyonu iptal etmek istediğinize emin misiniz?')) {
       setReservations(reservations.map(res =>
         res.id === reservationId
-          ? { ...res, status: 'iptal' }
+          ? { ...res, status: 'cancelled' }
           : res
       ));
     }
@@ -155,7 +152,7 @@ const ReservationManager = ({ tables, currentUser }) => {
     const reservationDateTime = new Date(date + ' ' + time);
     return tables.filter(table => {
       const conflicting = reservations.find(res => {
-        if (res.status === 'iptal') return false;
+        if (res.status === 'cancelled') return false;
         const resDateTime = new Date(res.date + ' ' + res.time);
         const hourDiff = Math.abs(resDateTime - reservationDateTime) / 36e5;
         return res.tableId === table.id.toString() && hourDiff < 2;
@@ -175,6 +172,31 @@ const ReservationManager = ({ tables, currentUser }) => {
 
   return (
     <div className="reservation-manager">
+      <div className="controls">
+        <div className="view-toggle">
+          <button
+            className={`toggle-button ${viewMode === 'calendar' ? 'active' : ''}`}
+            onClick={() => setViewMode('calendar')}
+          >
+            Takvim Görünümü
+          </button>
+          <button
+            className={`toggle-button ${viewMode === 'list' ? 'active' : ''}`}
+            onClick={() => setViewMode('list')}
+          >
+            Liste Görünümü
+          </button>
+        </div>
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Müşteri adı veya telefon ile ara..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="search-input"
+          />
+        </div>
+      </div>
       <div className="reservation-header">
         <h2>Rezervasyonlar</h2>
         <div className="view-controls">
@@ -235,7 +257,7 @@ const ReservationManager = ({ tables, currentUser }) => {
                 type="date"
                 name="date"
                 value={newReservation.date}
-                onChange={handleInputChange}
+                onChange={handleDateChange}
                 className="form-input"
                 min={new Date().toISOString().split('T')[0]}
                 required
@@ -300,6 +322,7 @@ const ReservationManager = ({ tables, currentUser }) => {
               />
             </div>
           </div>
+          {error && <p style={{ color: 'red' }}>{error}</p>}
           <button type="submit" className="submit-button">
             Rezervasyon Oluştur
           </button>
@@ -349,7 +372,7 @@ const ReservationManager = ({ tables, currentUser }) => {
                             <span>{tables.find(t => t.id.toString() === res.tableId)?.name}</span>
                             <span>{res.guests} Kişi</span>
                           </div>
-                          {res.status === 'onaylandı' && (
+                          {res.status === 'confirmed' && (
                             <button
                               onClick={() => handleCancel(res.id)}
                               className="cancel-button"
@@ -385,7 +408,7 @@ const ReservationManager = ({ tables, currentUser }) => {
                     <span className={`status-badge ${res.status}`}>
                       {res.status.charAt(0).toUpperCase() + res.status.slice(1)}
                     </span>
-                    {res.status === 'onaylandı' && (
+                    {res.status === 'confirmed' && (
                       <button
                         onClick={() => handleCancel(res.id)}
                         className="cancel-button"

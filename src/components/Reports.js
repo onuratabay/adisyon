@@ -60,7 +60,7 @@ const Reports = ({ orders, products, ingredients }) => {
       salesByProduct,
       averageOrderValue: totalRevenue / (filteredOrders.length || 1)
     };
-  }, [orders, dateRange, products]);
+  }, [orders, calculateDateRange, products]);
 
   const generateInventoryReport = useCallback(() => {
     const lowStockThreshold = 20; // Yüzde olarak
@@ -121,7 +121,7 @@ const Reports = ({ orders, products, ingredients }) => {
       averagePreparationTime: Math.round(averagePreparationTime / 1000 / 60), // Dakika cinsinden
       busyHours: calculateBusyHours(filteredOrders)
     };
-  }, [orders, dateRange]);
+  }, [orders, calculateDateRange]);
 
   const calculateBusyHours = useCallback((orders) => {
     const hourCounts = new Array(24).fill(0);

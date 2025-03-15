@@ -184,9 +184,10 @@ const TableManager = ({ orders, onOrderUpdate, currentUser }) => {
         )}
       </div>
 
-      <div
-        className="table-grid"
+      <div 
+        className="table-grid" 
         onDragOver={handleDragOver}
+        onDrop={(e) => handleDrop(e, { x: e.clientX, y: e.clientY })}
       >
         {tables.map(table => (
           <div
