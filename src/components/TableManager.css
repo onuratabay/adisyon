@@ -1,0 +1,257 @@
+.table-manager {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.table-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.table-controls h2 {
+  margin: 0;
+  color: #333;
+}
+
+.add-table-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.add-table-button:hover {
+  background-color: #45a049;
+}
+
+.table-form {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  display: flex;
+  gap: 15px;
+}
+
+.form-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  flex: 1;
+}
+
+.submit-button {
+  background-color: #2196F3;
+  color: white;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.submit-button:hover {
+  background-color: #1976D2;
+}
+
+.table-layout {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  min-height: 600px;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.table-item {
+  position: absolute;
+  width: 120px;
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.table-item.selected {
+  border-color: #2196F3;
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.3);
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.table-header span {
+  font-weight: 500;
+  color: #333;
+}
+
+.delete-table {
+  background: none;
+  border: none;
+  color: #f44336;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0 5px;
+}
+
+.delete-table:hover {
+  color: #d32f2f;
+}
+
+.table-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 0.9rem;
+}
+
+.capacity {
+  color: #666;
+}
+
+.status {
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.status.boş {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.status.Bekliyor {
+  background-color: #ff9800;
+  color: white;
+}
+
+.status.Hazırlanıyor {
+  background-color: #2196F3;
+  color: white;
+}
+
+.status.Tamamlandı {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.order-info {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+  font-size: 0.9rem;
+}
+
+.order-info p {
+  margin: 2px 0;
+  color: #666;
+}
+
+.table-detail {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table-detail h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+}
+
+.detail-info {
+  margin-bottom: 15px;
+}
+
+.detail-info p {
+  margin: 5px 0;
+  color: #666;
+}
+
+.current-order {
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+}
+
+.current-order h4,
+.available-orders h4 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.order-items p {
+  margin: 5px 0;
+  color: #666;
+}
+
+.order-total {
+  font-weight: 500;
+  color: #2196F3;
+  margin: 10px 0;
+}
+
+.clear-table-button {
+  background-color: #f44336;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.clear-table-button:hover {
+  background-color: #d32f2f;
+}
+
+.available-orders {
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.assign-button {
+  background-color: #2196F3;
+  color: white;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.assign-button:hover {
+  background-color: #1976D2;
+}

@@ -1,0 +1,272 @@
+.order-list-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.order-form {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.product-selector {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.quantity-input {
+  width: 100%;
+  min-width: 80px;
+}
+
+.add-button {
+  background-color: #2196F3;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.add-button:hover {
+  background-color: #1976D2;
+}
+
+.selected-products {
+  margin: 15px 0;
+}
+
+.selected-product {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.selected-product strong {
+  color: #4CAF50;
+  margin-left: 5px;
+}
+
+.order-total {
+  text-align: right;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #4CAF50;
+  margin-top: 15px;
+  padding: 10px;
+  border-top: 2px solid #eee;
+}
+
+.remove-button {
+  background: none;
+  border: none;
+  color: #ff4444;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 0 5px;
+}
+
+.remove-button:hover {
+  color: #cc0000;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.submit-button {
+  flex: 1;
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.submit-button:hover {
+  background-color: #45a049;
+}
+
+.cancel-button {
+  flex: 1;
+  background-color: #f44336;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.cancel-button:hover {
+  background-color: #da190b;
+}
+
+.orders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.order-card {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.order-card h3 {
+  margin: 0;
+  color: #333;
+}
+
+.order-items {
+  margin: 10px 0;
+}
+
+.order-items p {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+  padding: 5px 0;
+  border-bottom: 1px solid #eee;
+  color: #666;
+}
+
+.item-total {
+  color: #4CAF50;
+  font-weight: 500;
+}
+
+.order-card .total {
+  font-weight: bold;
+  color: #4CAF50;
+  font-size: 1.1em;
+  margin: 10px 0;
+  text-align: right;
+  padding-top: 10px;
+  border-top: 2px solid #eee;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.status-waiting {
+  background-color: #ff9800;
+  color: white;
+}
+
+.status-preparing {
+  background-color: #2196F3;
+  color: white;
+}
+
+.status-completed {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.status-buttons {
+  display: flex;
+  gap: 8px;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+
+.status-button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  color: white;
+  flex: 1;
+  min-width: 100px;
+}
+
+.status-button.waiting {
+  background-color: #ff9800;
+}
+
+.status-button.preparing {
+  background-color: #2196F3;
+}
+
+.status-button.completed {
+  background-color: #4CAF50;
+}
+
+.status-button:hover {
+  opacity: 0.9;
+}
+
+.edit-button {
+  background-color: #2196F3;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.edit-button:hover {
+  background-color: #1976D2;
+}
+
+.delete-button {
+  background-color: #ff4444;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.delete-button:hover {
+  background-color: #cc0000;
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}

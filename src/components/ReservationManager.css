@@ -1,0 +1,282 @@
+.reservation-manager {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.reservation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.reservation-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.view-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.view-button {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.view-button.active {
+  background: #2196F3;
+  color: white;
+  border-color: #2196F3;
+}
+
+.add-reservation-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.add-reservation-button:hover {
+  background-color: #45a049;
+}
+
+.reservation-form {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.form-group {
+  flex: 1;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #666;
+  font-size: 14px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-input:focus {
+  border-color: #2196F3;
+  outline: none;
+}
+
+textarea.form-input {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.submit-button {
+  background-color: #2196F3;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.submit-button:hover {
+  background-color: #1976D2;
+}
+
+.calendar-view {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.date-navigator {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.date-navigator button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #2196F3;
+  cursor: pointer;
+  padding: 0 10px;
+}
+
+.date-navigator h3 {
+  margin: 0;
+  color: #333;
+}
+
+.time-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.time-slot {
+  display: flex;
+  gap: 15px;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.time-label {
+  width: 80px;
+  color: #666;
+  font-weight: 500;
+}
+
+.slot-reservations {
+  flex: 1;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.reservation-card {
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 4px;
+  min-width: 200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reservation-card.iptal {
+  opacity: 0.6;
+  background: #ffebee;
+}
+
+.reservation-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.reservation-info strong {
+  color: #333;
+}
+
+.reservation-info span {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.cancel-button {
+  background-color: #f44336;
+  color: white;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.cancel-button:hover {
+  background-color: #d32f2f;
+}
+
+.list-view {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.reservation-item {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: 2fr 3fr 1fr;
+  gap: 15px;
+}
+
+.reservation-item.iptal {
+  opacity: 0.7;
+  background: #ffebee;
+}
+
+.reservation-main-info h4 {
+  margin: 0 0 5px 0;
+  color: #333;
+}
+
+.reservation-main-info p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.reservation-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.reservation-details p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.reservation-details .notes {
+  font-style: italic;
+  color: #888;
+}
+
+.reservation-status {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  font-weight: 500;
+}
+
+.status-badge.onaylandı {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.status-badge.iptal {
+  background-color: #f44336;
+  color: white;
+}
