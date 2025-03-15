@@ -121,19 +121,26 @@ const Reports = ({ orders, products, ingredients }) => {
       averagePreparationTime: Math.round(averagePreparationTime / 1000 / 60), // Dakika cinsinden
       busyHours: calculateBusyHours(filteredOrders)
     };
-  }, [orders, calculateDateRange]);
+  }, [orders, calculateDateRange, calculateBusyHours]);
 
   const calculateBusyHours = useCallback((orders) => {
     const hourCounts = new Array(24).fill(0);
     orders.forEach(order => {
-      const hour = new Date(order.date).getHours();
+      const orderDate = new Date(order.date);
+      const hour = orderDate.getHours();
       hourCounts[hour]++;
     });
     
-    return hourCounts.map((count, hour) => ({
-      hour: `${hour}:00`,
-      count
-    }));
+    const busyHours = hourCounts
+      .map((count, hour) => ({ hour, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5)
+      .map(({ hour, count }) => ({
+        hour: `${hour}:00`,
+        orderCount: count
+      }));
+
+    return busyHours;
   }, []);
 
   useEffect(() => {
@@ -303,11 +310,11 @@ const Reports = ({ orders, products, ingredients }) => {
                     key={hour.hour}
                     className="hour-bar"
                     style={{
-                      height: `${(hour.count / Math.max(...reportData.busyHours.map(h => h.count))) * 100}%`
+                      height: `${(hour.orderCount / Math.max(...reportData.busyHours.map(h => h.orderCount))) * 100}%`
                     }}
                   >
                     <span className="hour-label">{hour.hour}</span>
-                    <span className="hour-count">{hour.count}</span>
+                    <span className="hour-count">{hour.orderCount}</span>
                   </div>
                 ))}
               </div>
