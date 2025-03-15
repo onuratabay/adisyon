@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './ReservationManager.css';
 
 const ReservationManager = ({ tables, currentUser }) => {
   const [reservations, setReservations] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredReservations, setFilteredReservations] = useState([]);
   const [newReservation, setNewReservation] = useState({
     customerName: '',
     phoneNumber: '',
@@ -22,29 +24,54 @@ const ReservationManager = ({ tables, currentUser }) => {
     return `${hour}:00`;
   });
 
+  const filterReservations = useCallback(() => {
+    let filtered = [...reservations];
+
+    // Tarihe göre filtrele
+    if (selectedDate) {
+      filtered = filtered.filter(reservation => {
+        const reservationDate = new Date(reservation.date);
+        return (
+          reservationDate.getFullYear() === selectedDate.getFullYear() &&
+          reservationDate.getMonth() === selectedDate.getMonth() &&
+          reservationDate.getDate() === selectedDate.getDate()
+        );
+      });
+    }
+
+    // Arama terimine göre filtrele
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(reservation =>
+        reservation.customerName.toLowerCase().includes(term) ||
+        reservation.notes.toLowerCase().includes(term)
+      );
+    }
+
+    setFilteredReservations(filtered);
+  }, [reservations, selectedDate, searchTerm]);
+
   useEffect(() => {
-    // Tarih değiştiğinde rezervasyonları filtrele
     filterReservations();
-  }, [selectedDate]);
+  }, [filterReservations]);
 
-  const filterReservations = () => {
-    // Seçili tarihe göre rezervasyonları filtrele
-    const filtered = reservations.filter(res => {
-      const resDate = new Date(res.date);
-      return resDate.toDateString() === selectedDate.toDateString();
-    });
-    return filtered;
-  };
+  const handleDateChange = useCallback((e) => {
+    setSelectedDate(new Date(e.target.value));
+  }, []);
 
-  const handleInputChange = (e) => {
+  const handleSearch = useCallback((e) => {
+    setSearchTerm(e.target.value);
+  }, []);
+
+  const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
     setNewReservation(prev => ({
       ...prev,
       [name]: value
     }));
-  };
+  }, []);
 
-  const validateReservation = () => {
+  const validateReservation = useCallback(() => {
     const { customerName, phoneNumber, date, time, guests, tableId } = newReservation;
     
     if (!customerName || !phoneNumber || !date || !time || !guests || !tableId) {
@@ -81,9 +108,9 @@ const ReservationManager = ({ tables, currentUser }) => {
     }
 
     return null;
-  };
+  }, [newReservation, reservations, tables]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = useCallback((e) => {
     e.preventDefault();
     
     const error = validateReservation();
@@ -110,9 +137,9 @@ const ReservationManager = ({ tables, currentUser }) => {
       notes: ''
     });
     setIsEditing(false);
-  };
+  }, [newReservation, reservations]);
 
-  const handleCancel = (reservationId) => {
+  const handleCancel = useCallback((reservationId) => {
     if (window.confirm('Rezervasyonu iptal etmek istediğinize emin misiniz?')) {
       setReservations(reservations.map(res =>
         res.id === reservationId
@@ -120,9 +147,9 @@ const ReservationManager = ({ tables, currentUser }) => {
           : res
       ));
     }
-  };
+  }, [reservations]);
 
-  const getAvailableTables = (date, time) => {
+  const getAvailableTables = useCallback((date, time) => {
     if (!date || !time) return tables;
 
     const reservationDateTime = new Date(date + ' ' + time);
@@ -135,16 +162,16 @@ const ReservationManager = ({ tables, currentUser }) => {
       });
       return !conflicting;
     });
-  };
+  }, [reservations, tables]);
 
-  const formatDate = (date) => {
+  const formatDate = useCallback((date) => {
     return new Date(date).toLocaleDateString('tr-TR', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
-  };
+  }, []);
 
   return (
     <div className="reservation-manager">
@@ -305,7 +332,7 @@ const ReservationManager = ({ tables, currentUser }) => {
             </div>
             <div className="time-slots">
               {workingHours.map(hour => {
-                const timeSlotReservations = filterReservations().filter(
+                const timeSlotReservations = filteredReservations.filter(
                   res => res.time === hour
                 );
                 return (
@@ -340,7 +367,7 @@ const ReservationManager = ({ tables, currentUser }) => {
           </div>
         ) : (
           <div className="list-view">
-            {reservations
+            {filteredReservations
               .sort((a, b) => new Date(a.date + ' ' + a.time) - new Date(b.date + ' ' + b.time))
               .map(res => (
                 <div key={res.id} className={`reservation-item ${res.status}`}>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './Reports.css';
 
 const Reports = ({ orders, products, ingredients }) => {
@@ -6,7 +6,7 @@ const Reports = ({ orders, products, ingredients }) => {
   const [reportType, setReportType] = useState('sales');
   const [reportData, setReportData] = useState(null);
 
-  const calculateDateRange = () => {
+  const calculateDateRange = useCallback(() => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     
@@ -24,9 +24,11 @@ const Reports = ({ orders, products, ingredients }) => {
       default:
         return { start: today, end: now };
     }
-  };
+  }, [dateRange]);
 
-  const generateSalesReport = () => {
+  const generateSalesReport = useCallback(() => {
+    if (orders.length === 0) return;
+    
     const { start, end } = calculateDateRange();
     const filteredOrders = orders.filter(order => {
       const orderDate = new Date(order.date);
@@ -58,9 +60,9 @@ const Reports = ({ orders, products, ingredients }) => {
       salesByProduct,
       averageOrderValue: totalRevenue / (filteredOrders.length || 1)
     };
-  };
+  }, [orders, dateRange, products]);
 
-  const generateInventoryReport = () => {
+  const generateInventoryReport = useCallback(() => {
     const lowStockThreshold = 20; // Yüzde olarak
     const lowStockItems = ingredients.filter(item => {
       const stockPercentage = (item.quantity / item.minQuantity) * 100;
@@ -86,9 +88,9 @@ const Reports = ({ orders, products, ingredients }) => {
         return total + (product ? parseFloat(item.quantity) * product.price : 0);
       }, 0)
     };
-  };
+  }, [ingredients, products]);
 
-  const generateOrderReport = () => {
+  const generateOrderReport = useCallback(() => {
     const { start, end } = calculateDateRange();
     const filteredOrders = orders.filter(order => {
       const orderDate = new Date(order.date);
@@ -119,9 +121,9 @@ const Reports = ({ orders, products, ingredients }) => {
       averagePreparationTime: Math.round(averagePreparationTime / 1000 / 60), // Dakika cinsinden
       busyHours: calculateBusyHours(filteredOrders)
     };
-  };
+  }, [orders, dateRange]);
 
-  const calculateBusyHours = (orders) => {
+  const calculateBusyHours = useCallback((orders) => {
     const hourCounts = new Array(24).fill(0);
     orders.forEach(order => {
       const hour = new Date(order.date).getHours();
@@ -132,7 +134,7 @@ const Reports = ({ orders, products, ingredients }) => {
       hour: `${hour}:00`,
       count
     }));
-  };
+  }, []);
 
   useEffect(() => {
     switch (reportType) {
@@ -148,14 +150,14 @@ const Reports = ({ orders, products, ingredients }) => {
       default:
         setReportData(null);
     }
-  }, [reportType, dateRange, orders, products, ingredients]);
+  }, [reportType, dateRange, orders, products, ingredients, generateSalesReport, generateInventoryReport, generateOrderReport]);
 
-  const formatCurrency = (amount) => {
+  const formatCurrency = useCallback((amount) => {
     return new Intl.NumberFormat('tr-TR', {
       style: 'currency',
       currency: 'TRY'
     }).format(amount);
-  };
+  }, []);
 
   return (
     <div className="reports-container">

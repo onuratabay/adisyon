@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import './UserAuth.css';
 
@@ -26,47 +26,7 @@ const UserAuth = ({ onLogin, currentUser, onLogout }) => {
   });
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    let scanner = null;
-    if (showScanner) {
-      scanner = new Html5QrcodeScanner('qr-reader', {
-        qrbox: {
-          width: 250,
-          height: 250
-        },
-        fps: 5,
-      });
-      
-      scanner.render(success, error);
-      
-      function success(result) {
-        scanner.clear();
-        setShowScanner(false);
-        handleQRLogin(result);
-      }
-      
-      function error(err) {
-        console.warn(err);
-      }
-    }
-    
-    return () => {
-      if (scanner) {
-        scanner.clear();
-      }
-    };
-  }, [showScanner]);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    setError('');
-  };
-
-  const handleQRLogin = (qrData) => {
+  const handleQRLogin = useCallback((qrData) => {
     // QR kod formatı: "TABLE_ID:XXXX"
     const tableId = qrData.split(':')[1];
     if (tableId) {
@@ -78,9 +38,48 @@ const UserAuth = ({ onLogin, currentUser, onLogout }) => {
     } else {
       setError('Geçersiz QR kod!');
     }
-  };
+  }, [onLogin]);
 
-  const handleTableIdLogin = (e) => {
+  useEffect(() => {
+    let scanner = null;
+    if (showScanner) {
+      scanner = new Html5QrcodeScanner('qr-reader', {
+        qrbox: {
+          width: 250,
+          height: 250
+        },
+        fps: 5,
+      });
+      
+      scanner.render(
+        (result) => {
+          scanner.clear();
+          setShowScanner(false);
+          handleQRLogin(result);
+        },
+        (err) => {
+          console.warn(err);
+        }
+      );
+    }
+    
+    return () => {
+      if (scanner) {
+        scanner.clear();
+      }
+    };
+  }, [showScanner, handleQRLogin]);
+
+  const handleInputChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    setError('');
+  }, []);
+
+  const handleTableIdLogin = useCallback((e) => {
     e.preventDefault();
     if (formData.tableId) {
       onLogin({
@@ -91,9 +90,9 @@ const UserAuth = ({ onLogin, currentUser, onLogout }) => {
     } else {
       setError('Masa numarası gerekli!');
     }
-  };
+  }, [formData.tableId, onLogin]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = useCallback((e) => {
     e.preventDefault();
     if (isQRMode) {
       handleTableIdLogin(e);
@@ -125,23 +124,23 @@ const UserAuth = ({ onLogin, currentUser, onLogout }) => {
       setFormData({ username: '', password: '', role: USER_ROLES.WAITER, tableId: '' });
       setIsLoginMode(true);
     }
-  };
+  }, [isQRMode, isLoginMode, users, formData, onLogin, handleTableIdLogin]);
 
-  const toggleMode = () => {
+  const toggleMode = useCallback(() => {
     setIsLoginMode(prev => !prev);
     setIsQRMode(false);
     setShowScanner(false);
     setFormData({ username: '', password: '', role: USER_ROLES.WAITER, tableId: '' });
     setError('');
-  };
+  }, []);
 
-  const toggleQRMode = () => {
+  const toggleQRMode = useCallback(() => {
     setIsQRMode(prev => !prev);
     setIsLoginMode(true);
     setShowScanner(false);
     setFormData({ username: '', password: '', role: USER_ROLES.WAITER, tableId: '' });
     setError('');
-  };
+  }, []);
 
   if (currentUser) {
     return (
@@ -166,13 +165,13 @@ const UserAuth = ({ onLogin, currentUser, onLogout }) => {
       <div className="auth-mode-switch">
         <button
           className={`mode-button ${!isQRMode ? 'active' : ''}`}
-          onClick={() => toggleQRMode()}
+          onClick={toggleQRMode}
         >
           Personel Girişi
         </button>
         <button
           className={`mode-button ${isQRMode ? 'active' : ''}`}
-          onClick={() => toggleQRMode()}
+          onClick={toggleQRMode}
         >
           Masa Girişi
         </button>
